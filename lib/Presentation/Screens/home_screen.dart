@@ -147,7 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Visibility(
                     visible: state.status == Status.loadingNextPage,
-                    child: CircularProgressIndicator()),
+                    child: SizedBox(
+                        height: 70,
+                        child: Center(child: CircularProgressIndicator()))),
               ],
             );
           },

@@ -19,10 +19,7 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent));
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.landscapeLeft,
-  //   DeviceOrientation.landscapeRight,
-  // ]);
+  
   await EasyLocalization.ensureInitialized();
   // final secureStorage = SecureStorage();
   final HydratedStorage hydratedStorage = await HydratedStorage.build(
