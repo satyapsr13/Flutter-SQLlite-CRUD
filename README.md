@@ -1,16 +1,8 @@
-# flutter_sqllite_impl
+# Flutter + SQLlite + BLOC
 
-A new Flutter project.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ 
+![sql4](https://user-images.githubusercontent.com/73766765/233803255-44da96ce-70fe-485d-a104-f111824bc4dc.jpg)
+![sql3](https://user-images.githubusercontent.com/73766765/233803262-0d39b4e6-88b6-4a7c-b478-b5e52dea945c.jpg)
+![sql2](https://user-images.githubusercontent.com/73766765/233803267-706a3dc3-7d76-4c21-a856-221c8570e610.jpg)
+![sql1](https://user-images.githubusercontent.com/73766765/233803270-245dd776-cfc7-4fe7-9689-090ebfe089ba.jpg)
