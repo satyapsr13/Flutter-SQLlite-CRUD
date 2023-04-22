@@ -2,12 +2,12 @@ part of 'product_cubit.dart';
 
 class ProductState extends Equatable {
   final Status status;
-  final ProductResponse? productData;
+  final List<Product> productData;
   final List<Product> cartProduct;
   final num cartTotal;
   const ProductState(
       {this.status = Status.initial,
-      this.productData,
+      this.productData = const [],
       this.cartProduct = const [],
       this.cartTotal = 0});
 
@@ -21,7 +21,7 @@ class ProductState extends Equatable {
 
   ProductState copyWith(
       {Status? status,
-      ProductResponse? productData,
+      List<Product>? productData,
       List<Product>? cartProduct,
       num? cartTotal}) {
     return ProductState(

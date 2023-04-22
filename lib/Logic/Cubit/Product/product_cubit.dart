@@ -24,12 +24,16 @@ class ProductCubit extends HydratedCubit<ProductState> {
   // ProductCubit(super.state);
 
   Future<void> fetchProducts(int pageNo) async {
-    emit(state.copyWith(status: Status.loading));
+    emit(state.copyWith(
+        status: pageNo != 1 ? Status.loadingNextPage : Status.loading));
     ApiResult<ProductResponse> aeonianData =
         await productRepository.fetchProducts(pageNo);
 
     aeonianData.when(success: (ProductResponse data) {
-      emit(state.copyWith(status: Status.success, productData: data));
+      List<Product> data1 = [];
+      data1.addAll(state.productData);
+      data1.addAll(data.data);
+      emit(state.copyWith(status: Status.success, productData: data1));
     }, failure: (NetworkExceptions error) {
       emit(state.copyWith(
         status: Status.failure,
@@ -62,7 +66,7 @@ class ProductCubit extends HydratedCubit<ProductState> {
     bool? isPresent;
     state.cartProduct.where((element) {
       if (id == element.id) {
-        isPresent = true;
+        isPresent = false;
         return false;
       }
       return true;

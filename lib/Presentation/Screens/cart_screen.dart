@@ -21,6 +21,9 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
+    final islandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
       return Scaffold(
         appBar: AppBar(
@@ -28,7 +31,7 @@ class _CartScreenState extends State<CartScreen> {
           centerTitle: true,
         ),
         bottomNavigationBar: Container(
-          height: 70,
+          height: islandscape ? 40 : 70,
           width: mq.width,
           color: Colors.blue.withOpacity(0.5),
           child: Padding(
@@ -36,14 +39,14 @@ class _CartScreenState extends State<CartScreen> {
             child: Row(
               children: [
                 Text(
-                  "Total ",
+                  "Total Items:- ${state.cartProduct.length} ",
                   style: const TextStyle(
                     color: Colors.black,
                   ),
                 ),
                 const Spacer(),
                 Text(
-                  "\$ ${state.cartTotal}",
+                  "Grand Total:- \$ ${state.cartTotal}",
                   style: const TextStyle(
                     color: Colors.black,
                   ),
@@ -73,66 +76,169 @@ class _CartScreenState extends State<CartScreen> {
           return Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: state.cartProduct.length,
-                  itemBuilder: (ctx, index) {
-                    final product = state.cartProduct[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 5,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: mq.width * 0.45,
-                              height: mq.height * 0.2,
-                              child: Image.network(
-                                product.featuredImage,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            Padding(
+                child: islandscape
+                    ? GridView.builder(
+                        itemCount: state.cartProduct.length,
+                        itemBuilder: (ctx, index) {
+                          final product = state.cartProduct[index];
+                          return SizedBox(
+                            child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: mq.width * 0.4,
-                                    child: Text(
-                                      product.title,
-                                      style: const TextStyle(),
+                              child: Card(
+                                elevation: 5,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: mq.width * 0.22,
+                                      height: mq.height * (0.4),
+                                      child: Image.network(
+                                        product.featuredImage,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Price \$${product.price}",
-                                    style: const TextStyle(),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Quantity  ${product.quantity}",
-                                    style: const TextStyle(),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  IconButton(
-                                      onPressed: () {
-                                        BlocProvider.of<ProductCubit>(context)
-                                            .deleteCartItem(product.id);
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        size: 20,
-                                      )),
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: mq.width * 0.2,
+                                            child: Text(
+                                              product.title,
+                                              style: const TextStyle(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            // crossAxisAlignment: CrossAxisAlignment.,
+                                            children: [
+                                              Text(
+                                                "Price ",
+                                                style: const TextStyle(),
+                                              ),
+                                              // const Spacer(),
+                                              Text(
+                                                "\$${product.price}",
+                                                style: const TextStyle(),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            "Quantity  ${product.quantity}",
+                                            style: const TextStyle(),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          IconButton(
+                                              onPressed: () {
+                                                BlocProvider.of<ProductCubit>(
+                                                        context)
+                                                    .deleteCartItem(product.id);
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                size: 20,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          );
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 3 / 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10),
+                      )
+                    : ListView.builder(
+                        itemCount: state.cartProduct.length,
+                        itemBuilder: (ctx, index) {
+                          final product = state.cartProduct[index];
+                          return SizedBox(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                elevation: 5,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: mq.width *
+                                          (islandscape ? 0.15 : 0.45),
+                                      height: mq.height * (0.2),
+                                      child: Image.network(
+                                        product.featuredImage,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: mq.width * 0.4,
+                                            child: Text(
+                                              product.title,
+                                              style: const TextStyle(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            // crossAxisAlignment: CrossAxisAlignment.,
+                                            children: [
+                                              Text(
+                                                "Price ",
+                                                style: const TextStyle(),
+                                              ),
+                                              // const Spacer(),
+                                              Text(
+                                                "\$${product.price}",
+                                                style: const TextStyle(),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            "Quantity  ${product.quantity}",
+                                            style: const TextStyle(),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          IconButton(
+                                              onPressed: () {
+                                                BlocProvider.of<ProductCubit>(
+                                                        context)
+                                                    .deleteCartItem(product.id);
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                size: 20,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           );

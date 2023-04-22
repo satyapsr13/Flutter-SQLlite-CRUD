@@ -12,17 +12,17 @@ import 'package:sqflite/sqflite.dart';
 
 import 'Logic/block_provider.dart';
 
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // final database =
+
   await SQLHelper.initSQLLiteDB();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent));
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.landscapeLeft,
+  //   DeviceOrientation.landscapeRight,
+  // ]);
   await EasyLocalization.ensureInitialized();
   // final secureStorage = SecureStorage();
   final HydratedStorage hydratedStorage = await HydratedStorage.build(

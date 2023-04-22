@@ -6,6 +6,7 @@ import 'package:flutter_sqllite_impl/Constants/enums.dart';
 import 'package:flutter_sqllite_impl/Logic/Cubit/Product/product_cubit.dart';
 import 'package:flutter_sqllite_impl/Presentation/Screens/cart_screen.dart';
 import 'package:flutter_sqllite_impl/Utility/next_screen.dart';
+import 'package:flutter_sqllite_impl/Utility/snackbar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,19 +16,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+  int currentPage = 1;
   @override
   void initState() {
-    BlocProvider.of<ProductCubit>(context).fetchProducts(1);
-
+    BlocProvider.of<ProductCubit>(context).fetchProducts(currentPage);
+    _scrollController.addListener(_onScroll);
     super.initState();
+  }
+
+  _onScroll() {
+    if ((_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent)) {
+      BlocProvider.of<ProductCubit>(context).fetchProducts(currentPage);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
-    return
-        // child:
-        Scaffold(
+    final islandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Shopping Mall'),
         centerTitle: true,
@@ -46,19 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: BlocListener<ProductCubit, ProductState>(
         listener: (context, state) {
           if (state.status == Status.cartAdded) {
-            final snackBar = SnackBar(
-              content: const Text('Product Added added'),
-              backgroundColor: (Colors.green),
-              action: SnackBarAction(
-                label: 'Ok',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            ////ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
+            showSnackBar(context, Colors.green, "Product Added");
+            nextScreen(context, CartScreen());
           }
         },
         child: BlocBuilder<ProductCubit, ProductState>(
@@ -80,13 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ));
             }
+            currentPage++;
             return Column(
               children: [
                 Expanded(
                   child: GridView.builder(
-                    itemCount: state.productData!.data.length,
+                    controller: _scrollController,
+                    itemCount: state.productData.length,
                     itemBuilder: (ctx, index) {
-                      final product = state.productData!.data[index];
+                      final product = state.productData[index];
                       return Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Card(
@@ -95,18 +97,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               children: [
                                 SizedBox(
-                                    height: 100,
-                                    width: 100,
+                                    // height: 100,
+                                    width:
+                                        mq.width * (islandscape ? 0.1 : 0.25),
                                     child: Image.network(
                                       product.featuredImage,
                                       fit: BoxFit.cover,
                                     )),
+                                SizedBox(height: 10),
                                 Padding(
                                   padding: const EdgeInsets.all(2.0),
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       SizedBox(
-                                        width: mq.width * 0.22,
+                                        width: mq.width *
+                                            (islandscape ? 0.1 : 0.22),
                                         child: Text(
                                           product.title,
                                           style: const TextStyle(),
@@ -132,12 +139,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3 / 4,
+                        crossAxisCount: islandscape ? 4 : 2,
+                        childAspectRatio: islandscape ? 5 / 6 : 3 / 4,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10),
                   ),
                 ),
+                Visibility(
+                    visible: state.status == Status.loadingNextPage,
+                    child: CircularProgressIndicator()),
               ],
             );
           },
